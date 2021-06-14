@@ -5,6 +5,185 @@
 #include <string>
 #include <string.h>
 
+int Game::points = 3;
+bool Game::play = true;
+int Game::scrollValue = 0;
+
+
+
+//saving the game
+void Game::savingInformation(Customer *customerOrderingList[]) {
+    ofstream MyFile("saveGame.txt");
+    // include customers currently in queue and total points
+    for (int i = 0; i < 3; i++) {
+        MyFile << customerOrderingList[i]->getName() << "\n";
+        MyFile << customerOrderingList[i]->getPhone() << "\n";
+        MyFile << customerOrderingList[i]->getRequest() << "\n";
+        MyFile << customerOrderingList[i]->getId() << "\n";
+    }
+    MyFile << points << "\n";
+    MyFile.close();
+}
+
+//list of past customers
+void Game::flex(Customer *customerOrderingList[], int index) {
+    ofstream outfile;
+    outfile.open("flexList.txt", ios_base::app);
+    outfile << customerOrderingList[index]->getName() << "\n";
+    outfile << customerOrderingList[index]->getPhone() << "\n";
+    outfile << customerOrderingList[index]->getRequest() << "\n";
+    outfile << customerOrderingList[index]->getIsMad() << "\n";
+    outfile << "\n";
+}
+
+int countLines() {
+    //initializing variables
+    int numLines = 0;
+    string line;
+    ifstream myFile("flexList.txt");
+    //counting number of lines
+    while (getline(myFile, line)) {
+        ++numLines;
+    }
+    return numLines;
+}
+
+//replacing customer queue with saved information
+int getInformation(Customer customerOrderingList[], int points, int available[]) {
+    string tempArray[13];
+    //resetting availability list in order to replace customer queue
+    for (int i = 0; i < 10; i++) {
+        available[i] = i;
+    }
+    int count = 0;
+    string myText;
+    //retrieving saved information from last save and quit
+    ifstream MyReadFile("saveGame.txt");
+    while (getline(MyReadFile, myText)) {
+        tempArray[count] = myText;
+        count++;
+    }
+    //replacing existing customer queue with saved information
+    for (int i = 0; i < 3; i++) {
+        customerOrderingList[i].setName(tempArray[((3 * i) + i)]);
+        customerOrderingList[i].setPhone(tempArray[((3 * i) + i) + 1]);
+        customerOrderingList[i].setRequest(stoi(tempArray[((3 * i) + i) + 2]));
+        customerOrderingList[i].setId(stoi(tempArray[((3 * i) + i) + 3]));
+        available[stoi(tempArray[((3 * i) + i) + 3])] = -1;
+    }
+    //replacing existing points with saved points
+    points = stoi(tempArray[12]);
+    return points;
+}
+
+string **getFlexList() {
+    // creating a 2D array
+    string **matrix;
+    int numCustomers = countLines() / 5;
+    matrix = new string *[numCustomers];
+    for (int i = 0; i < numCustomers; i++) {
+        matrix[i] = new string[5];
+    }
+
+    // putting all lines from flex list into temp array
+    string tempArray[numCustomers * 5];
+    string line;
+    ifstream myFile("flexList.txt");
+    int count1 = 0;
+    int count2 = 0;
+    while (getline(myFile, line)) {
+        tempArray[count1] = line;
+        count1++;
+    }
+
+    // moving all values from tempArray to matrix (a 2d array)
+    for (int i = 0; i < numCustomers; i++) {
+        for (int j = 0; j < 5; j++) {
+            matrix[i][j] = tempArray[count2];
+            count2++;
+        }
+    }
+    return matrix;
+}
+
+//sorting flex list alphabetically
+void selectSort(string **arr, int length) {
+    int pos_max;
+    string temp[5];
+
+    for (int i = length - 1; i > 0; i--) {
+        //setting first index as temporary largest position
+        pos_max = 0;
+        for (int j = 1; j <= i; j++) {
+            //checks if current position is greater alphabetically
+            if (strcmp(arr[j][0].c_str(), arr[pos_max][0].c_str()) < 0) {
+
+                pos_max = j; //if larger found, set new largest
+            }
+        }
+        //swapping element at i (and all the elements that are associated with it in 2d list) with largest element in unsorted section
+        for (int k = 0; k < 5; k++) {
+
+            temp[k] = arr[i][k];
+            arr[i][k] = arr[pos_max][k];
+            arr[pos_max][k] = temp[k];
+        }
+
+    }
+    //outputting order
+    for (int i = length - 1; i >= 0; i--) {
+        for (int j = 0; j < 5; j++) {
+            cout << arr[i][j] << endl;
+        }
+    }
+}
+
+//outputting flex list at end of game
+void outputResults(QGraphicsScene *scene, int scrollNum) {
+    string results;
+    ifstream MyReadFile("flexList.txt");
+    int count = 0;
+    while (getline(MyReadFile, results)) {
+        string temp = results;
+        QString text = QString::fromStdString(temp);
+
+        QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
+        customerText -> setText(text);
+        scene->addItem(customerText);
+        customerText->setPos(0, count+scrollNum);
+        count += 20;
+    }
+    MyReadFile.close();
+}
+
+void Game::wheelEvent(QWheelEvent *event) {
+    if (points == 0 || points == 10) {
+        if (event->angleDelta().y() > 0) {
+            scene->clear();
+            scrollValue += event->angleDelta().y() / 6;
+            outputResults(scene, scrollValue);
+        } else {
+            scene->clear();
+            scrollValue += event->angleDelta().y() / 6;
+            outputResults(scene, scrollValue);
+
+        }
+    }
+}
+
+void delFlexList() {
+    fstream ofs;
+    ofs.open("flexList.txt", ios::out | ios::trunc);
+    ofs.close();
+}
+
+//clear contents of save game
+void delSaveGame() {
+    fstream ofs;
+    ofs.open("saveGame.txt", ios::out | ios::trunc);
+    ofs.close();
+}
+
 void outputCustomer(Customer *c, int xcoor, int ycoor, QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[], int index) {
     string temp = c->toString();
     QString text = QString::fromStdString(temp);
@@ -36,7 +215,7 @@ Customer *generateCustomerOrderingList(Customer *customerOrderingList[], Custome
 }
 
 //checks if potion made is the right potion that the customer ordered
-int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[], int points) {
+int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[]) {
     //if the potion the customer ordered is the potion delivered, increase the points and set isMade to true
     Popup message;
     if (customerOrderingList[customer]->getRequest() == potion) {
@@ -49,59 +228,74 @@ int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[
         message.popup_losePoint();
         customerOrderingList[customer]->setIsMad(true);
         points--;
+    }
 
+    if (points == 0){
+        message.popup_lose();
+        play = message.popup_playAgain();
+        scene -> clear();
+        outputResults(scene, 0);
+    }
+    else if (points == 10) {
+        message.popup_win();
+        play = message.popup_playAgain();
+        scene -> clear();
+        outputResults(scene, 0);
     }
     //update the flex list
-    //flex(customerOrderingList, customer);
+    flex(customerOrderingList, customer);
 
+    qDebug() << "points:" << points;
     return points;
 }
 
 // updating the customer ordering list after a customer leaves
 void Game::updateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene) {
-    for (int i = 0; i < 3; i++) {
-        int temp;
-        if (customerOrderingList[i]->getIsMad() == true || customerOrderingList[i]->getIsMade() == true) {
+    if (points != 0 && points != 10) {
+        for (int i = 0; i < 3; i++) {
+            int temp;
+            if (customerOrderingList[i]->getIsMad() == true || customerOrderingList[i]->getIsMade() == true) {
 
-            int x;
-            int y;
-            //loops until index of available customer is randomly selected
-            do {
-                //random index is selected
-                y = rand() % 10;
-                //id of customer at that index is taken from availability list
-                x = available[y];
-                //availability list at index is set to -1 (customer is not available)
-                available[y] = -1;
-            } while (x == -1);
+                int x;
+                int y;
+                //loops until index of available customer is randomly selected
+                do {
+                    //random index is selected
+                    y = rand() % 10;
+                    //id of customer at that index is taken from availability list
+                    x = available[y];
+                    //availability list at index is set to -1 (customer is not available)
+                    available[y] = -1;
+                } while (x == -1);
 
-            //resets customer status
-            customerOrderingList[i]->setIsMade(false);
-            customerOrderingList[i]->setIsMad(false);
+                //resets customer status
+                customerOrderingList[i]->setIsMade(false);
+                customerOrderingList[i]->setIsMad(false);
 
-            //setting temp to the id of the customer that just left
-            temp = customerOrderingList[i] -> getId();
+                //setting temp to the id of the customer that just left
+                temp = customerOrderingList[i]->getId();
 
-            //a customer from customerList is selected and put into customerOrderingList
-            customerOrderingList[i] = customerList[x];
+                //a customer from customerList is selected and put into customerOrderingList
+                customerOrderingList[i] = customerList[x];
 
-            // after customer leaves, customer becomes available
-            available[temp] = temp;
-            scene->removeItem(customerTextList[0]);
-            scene->removeItem(customerTextList[1]);
-            scene->removeItem(customerTextList[2]);
-            delete customerTextList[0];
-            delete customerTextList[1];
-            delete customerTextList[2];
+                // after customer leaves, customer becomes available
+                available[temp] = temp;
+                scene->removeItem(customerTextList[0]);
+                scene->removeItem(customerTextList[1]);
+                scene->removeItem(customerTextList[2]);
+                delete customerTextList[0];
+                delete customerTextList[1];
+                delete customerTextList[2];
 
-            qDebug() << "A new customer arrived! Here is your customer list: ";
-            for (int j = 0; j < 3; j++) {
+                qDebug() << "A new customer arrived! Here is your customer list: ";
+                for (int j = 0; j < 3; j++) {
 
-                outputCustomer(customerOrderingList[j], (j*158)+ 30 + (j*20) , 30, scene, customerTextList, j);
+                    outputCustomer(customerOrderingList[j], (j * 158) + 30 + (j * 20), 30, scene, customerTextList, j);
+                }
             }
-
         }
     }
+
 
     //return *customerOrderingList;
 }
@@ -217,14 +411,6 @@ Game::Game(QWidget *parent) {
 
 
     generateCustomerOrderingList(customerOrderingList, customerList, available, scene, customerTextList);
-
-    //c9 -> toString();
-//    QGraphicsTextItem *customerText = scene->addText(customerList[0] -> getName());
-//    customerText->setPos(30, 30);
-//    QGraphicsTextItem *customerText = scene->addText("Testing Customer info");
-//    customerText->setPos(30, 30);
-//    scene -> removeItem(customerText);
-//    delete customerText;
 
     show();
 

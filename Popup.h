@@ -12,6 +12,7 @@ public:
     bool popup_reload();
     void popup_getPoint();
     void popup_losePoint();
+    bool popup_playAgain();
 };
 
 #endif //ALCHEMY_SHOP_TESTING_POPUP_H

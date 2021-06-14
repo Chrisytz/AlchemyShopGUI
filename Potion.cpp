@@ -54,23 +54,24 @@ void Potion::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
         if (posx > 20 && posx < 178) {
             qDebug() << "to customer 1";
             game -> scene -> removeItem(this);
-            game -> giveCustomer(this->getId(), 0, game->customerOrderingList, 0);
+            game -> giveCustomer(this->getId(), 0, game->customerOrderingList);
             game -> updateCustomerOrderingList(game->customerOrderingList, game->customerList, game->available, game->scene);
             this -> setOffset(324, 298);
         } else if (posx > 198 && posx < 356) {
             qDebug() << "to customer 2";
             game -> scene -> removeItem(this);
-            game -> giveCustomer(this->getId(), 1, game->customerOrderingList, 0);
+            game -> giveCustomer(this->getId(), 1, game->customerOrderingList);
             game -> updateCustomerOrderingList(game->customerOrderingList, game->customerList, game->available, game->scene);
             this -> setOffset(324, 298);
         } else if (posx > 376 && posx < 534) {
             qDebug() << "to customer 3";
             game -> scene -> removeItem(this);
-            game -> giveCustomer(this->getId(), 2, game->customerOrderingList, 0);
+            game -> giveCustomer(this->getId(), 2, game->customerOrderingList);
             game -> updateCustomerOrderingList(game->customerOrderingList, game->customerList, game->available, game->scene);
             this -> setOffset(324, 298);
         }
     }
+    game -> savingInformation(game->customerOrderingList);
 }
 
 void Potion::setBaseIngredient1(int ing1) {

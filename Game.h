@@ -11,12 +11,19 @@
 #include "Label.h"
 #include "Potion.h"
 #include "Customer.h"
+#include <QScrollBar>
 
 class Game: public QGraphicsView{
 public:
     Game(QWidget *parent=0);
-    int giveCustomer(int potion, int customer, Customer *customerOrderingList[], int points);
+    int giveCustomer(int potion, int customer, Customer *customerOrderingList[]);
     void updateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene);
+    void savingInformation(Customer *customerOrderingList[]);
+    void flex (Customer *customerOrderingList[], int index);
+    static int points;
+    static bool play;
+    static int scrollValue;
+
 
     QGraphicsScene *scene;
 
@@ -68,6 +75,8 @@ public:
     Customer *customerOrderingList[3];
     Customer *customerList[10];
     int available[10];
+protected:
+    void wheelEvent(QWheelEvent *event);
 
 };
 #endif //ALCHEMY_SHOP_TESTING_GAME_H

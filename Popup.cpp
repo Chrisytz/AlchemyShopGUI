@@ -53,3 +53,26 @@ bool Popup::popup_reload() {
     }
 }
 
+bool Popup::popup_playAgain() {
+    switch( QMessageBox::question(
+            this,
+            tr("Play Again"),
+            tr("Would you like to play again?"),
+
+            QMessageBox::Yes |
+            QMessageBox::No,
+
+            QMessageBox::No ) )
+    {
+        case QMessageBox::Yes:
+            qDebug( "yes" );
+            return true;
+        case QMessageBox::No:
+            qDebug( "no" );
+            return false;
+        default:
+            qDebug( "close" );
+            return false;
+    }
+}
+
