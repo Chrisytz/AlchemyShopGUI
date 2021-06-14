@@ -24,7 +24,6 @@ public:
     static bool play;
     static int scrollValue;
 
-
     QGraphicsScene *scene;
 
     QGraphicsRectItem *rect1;

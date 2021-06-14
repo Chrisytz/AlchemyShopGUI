@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <string.h>
+#include "FlexListButton.h"
 
 int Game::points = 3;
 bool Game::play = true;
@@ -232,15 +233,18 @@ int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[
 
     if (points == 0){
         message.popup_lose();
-        play = message.popup_playAgain();
+
         scene -> clear();
         outputResults(scene, 0);
+        FlexListButton *button = new FlexListButton();
+
     }
     else if (points == 10) {
         message.popup_win();
-        play = message.popup_playAgain();
         scene -> clear();
         outputResults(scene, 0);
+        FlexListButton *button = new FlexListButton();
+
     }
     //update the flex list
     flex(customerOrderingList, customer);

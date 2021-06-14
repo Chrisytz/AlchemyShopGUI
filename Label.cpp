@@ -11,6 +11,7 @@ extern Game * game;
 int Label::count = 0;
 int Label::count2 = 0;
 
+
 Label::Label(int og_x, int og_y, QPixmap image, int id) {
     this -> id = id;
     this -> og_x = og_x;
