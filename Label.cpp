@@ -63,7 +63,7 @@ void Label::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     int posy = event -> scenePos().y();
 
 
-    if ((posx < 178 || posx > 534 || posy < 140 || posy > 520)) {
+    if ((posx < 178 || posx > 534 || posy < 140 || posy > 520) || (posx > 470 && posx < 534  && posy > 456 && posy < 520)) {
         game -> scene -> removeItem(game->lableList[game->ingList[count2 - 1]->getId()]);
         game -> lableList[game->ingList[count2-1]->getId()] = game -> ingList[count2-1];
 

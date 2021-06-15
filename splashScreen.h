@@ -18,9 +18,11 @@ Q_OBJECT
 
 private:
 public:
-    QPushButton *button;
+    QPushButton *play;
+    QPushButton *load;
     splashScreen();
 private slots:
-    void onLeftButtonPressed();
+    void onPlayPressed();
+    void onLoadPressed();
 };
 #endif //ALCHEMYSHOPGUI_SPLASHSCREEN_H

@@ -70,6 +70,9 @@ void Potion::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
             game -> updateCustomerOrderingList(game->customerOrderingList, game->customerList, game->available, game->scene);
             this -> setOffset(324, 298);
         }
+    } else if (posx > 470 && posx < 534  && posy > 456 && posy < 520) {
+        game -> scene -> removeItem(this);
+        this -> setOffset(324, 298);
     }
     game -> savingInformation(game->customerOrderingList);
 }

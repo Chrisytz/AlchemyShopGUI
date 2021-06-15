@@ -5,9 +5,9 @@
 #include <string>
 #include <string.h>
 #include "FlexListButton.h"
+#include "splashScreen.h"
 
 int Game::points = 3;
-bool Game::play = true;
 int Game::scrollValue = 0;
 
 
@@ -48,9 +48,19 @@ int countLines() {
     }
     return numLines;
 }
+void outputCustomer(Customer *c, int xcoor, int ycoor, QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[], int index) {
+    string temp = c->toString();
+    QString text = QString::fromStdString(temp);
 
+    QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
+    customerText -> setText(text);
+    scene->addItem(customerText);
+    customerText->setPos(xcoor, ycoor);
+    customerTextList[index] = customerText;
+}
 //replacing customer queue with saved information
-int getInformation(Customer customerOrderingList[], int points, int available[]) {
+Customer* Game::getInformation(Customer *customerOrderingList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]) {
+    cout << "get information running" << endl;
     string tempArray[13];
     //resetting availability list in order to replace customer queue
     for (int i = 0; i < 10; i++) {
@@ -59,22 +69,45 @@ int getInformation(Customer customerOrderingList[], int points, int available[])
     int count = 0;
     string myText;
     //retrieving saved information from last save and quit
+    cout << "hello???" << endl;
     ifstream MyReadFile("saveGame.txt");
     while (getline(MyReadFile, myText)) {
         tempArray[count] = myText;
         count++;
     }
+    for (int i = 0; i < 13; i++){
+        cout << tempArray[i] << endl;
+    }
+
+//    for (int i=0; i<3; i++) {
+//        cout << customerOrderingList[i]->toString();
+//    }
+    cout << "why u not wokringggg" << endl;
     //replacing existing customer queue with saved information
     for (int i = 0; i < 3; i++) {
-        customerOrderingList[i].setName(tempArray[((3 * i) + i)]);
-        customerOrderingList[i].setPhone(tempArray[((3 * i) + i) + 1]);
-        customerOrderingList[i].setRequest(stoi(tempArray[((3 * i) + i) + 2]));
-        customerOrderingList[i].setId(stoi(tempArray[((3 * i) + i) + 3]));
+        Customer* customer = new Customer();
+        customer->setName(tempArray[((3 * i) + i)]);
+        customer->setPhone(tempArray[((3 * i) + i) + 1]);
+        customer->setRequest(stoi(tempArray[((3 * i) + i) + 2]));
+        customer->setId(stoi(tempArray[((3 * i) + i) + 3]));
+
+        customerOrderingList[i] = customer;
         available[stoi(tempArray[((3 * i) + i) + 3])] = -1;
+        cout << "exist? 6" << endl;
+        delete customer;
     }
+
+    cout << "how about now" << endl;
     //replacing existing points with saved points
     points = stoi(tempArray[12]);
-    return points;
+    for (int i = 0; i < 3; i++) {
+        cout << "whya re u bad" << endl;
+        cout << customerOrderingList[i]->toString() << endl;
+        outputCustomer(customerOrderingList[i], (i*158)+ 30 + (i*20) , 30, scene, customerTextList, i);
+    }
+    cout << "still wokring??" << endl;
+    //return points;
+    return *customerOrderingList;
 }
 
 string **getFlexList() {
@@ -185,19 +218,8 @@ void delSaveGame() {
     ofs.close();
 }
 
-void outputCustomer(Customer *c, int xcoor, int ycoor, QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[], int index) {
-    string temp = c->toString();
-    QString text = QString::fromStdString(temp);
-
-    QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
-    customerText -> setText(text);
-    scene->addItem(customerText);
-    customerText->setPos(xcoor, ycoor);
-    customerTextList[index] = customerText;
-}
-
 // placing customers from the customer list into the ordering list
-Customer *generateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]) {
+Customer* Game::generateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]) {
     //same as above, rng generator that catches if a customer is already in queue
     for (int i = 0; i < 3; i++) {
         int x;
@@ -399,6 +421,7 @@ Game::Game(QWidget *parent) {
 
     customerList;
     customerOrderingList;
+
     for (int i = 0; i < 10; i++) {
         available[i] = i;
     }
@@ -414,9 +437,54 @@ Game::Game(QWidget *parent) {
     customerList[9] = c9;
 
 
-    generateCustomerOrderingList(customerOrderingList, customerList, available, scene, customerTextList);
+
 
     show();
 
 }
+
+//Game::~Game() {
+//    qDebug() << "delete working";
+//    delete c9;
+//    delete c8;
+//    delete c7;
+//    delete c6;
+//    delete c5;
+//    delete c4;
+//    delete c3;
+//    delete c2;
+//    delete c1;
+//    delete c0;
+//
+//    delete toothbrush;
+//    delete cupcake;
+//    delete air;
+//    delete electricity;
+//    delete love;
+//    delete fire;
+//    delete wood;
+//    delete death;
+//    delete life;
+//
+//    delete p9;
+//    delete p8;
+//    delete p7;
+//    delete p6;
+//    delete p5;
+//    delete p4;
+//    delete p3;
+//    delete p2;
+//    delete p1;
+//    delete p0;
+//
+//    delete save;
+//    delete trash;
+//    delete sidebar;
+//    delete workspace;
+//    delete rect3;
+//    delete rect2;
+//    delete rect1;
+//    delete scene;
+//
+//}
 

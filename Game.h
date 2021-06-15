@@ -16,12 +16,14 @@
 class Game: public QGraphicsView{
 public:
     Game(QWidget *parent=0);
+    //~Game();
     int giveCustomer(int potion, int customer, Customer *customerOrderingList[]);
     void updateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene);
     void savingInformation(Customer *customerOrderingList[]);
     void flex (Customer *customerOrderingList[], int index);
+    Customer *getInformation(Customer *customerOrderingList[], int available[], QGraphicsScene *scene,  QGraphicsSimpleTextItem *customerTextList[]);
+    Customer *generateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]);
     static int points;
-    static bool play;
     static int scrollValue;
 
     QGraphicsScene *scene;
