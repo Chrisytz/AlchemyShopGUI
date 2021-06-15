@@ -58,8 +58,9 @@ void outputCustomer(Customer *c, int xcoor, int ycoor, QGraphicsScene *scene, QG
     customerText->setPos(xcoor, ycoor);
     customerTextList[index] = customerText;
 }
+
 //replacing customer queue with saved information
-Customer* Game::getInformation(Customer *customerOrderingList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]) {
+Customer* Game:: getInformation(Customer *customerOrderingList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]) {
     cout << "get information running" << endl;
     string tempArray[13];
     //resetting availability list in order to replace customer queue
@@ -84,18 +85,33 @@ Customer* Game::getInformation(Customer *customerOrderingList[], int available[]
 //    }
     cout << "why u not wokringggg" << endl;
     //replacing existing customer queue with saved information
-    for (int i = 0; i < 3; i++) {
-        Customer* customer = new Customer();
-        customer->setName(tempArray[((3 * i) + i)]);
-        customer->setPhone(tempArray[((3 * i) + i) + 1]);
-        customer->setRequest(stoi(tempArray[((3 * i) + i) + 2]));
-        customer->setId(stoi(tempArray[((3 * i) + i) + 3]));
 
-        customerOrderingList[i] = customer;
-        available[stoi(tempArray[((3 * i) + i) + 3])] = -1;
-        cout << "exist? 6" << endl;
-        delete customer;
-    }
+    Customer *customer1 = new Customer();
+    Customer *customer2 = new Customer();
+    Customer *customer3 = new Customer();
+
+    customer1->setName(tempArray[0]);
+    customer1->setPhone(tempArray[1]);
+    customer1->setRequest(stoi(tempArray[2]));
+    customer1->setId(stoi(tempArray[3]));
+    customer2->setName(tempArray[4]);
+    customer2->setPhone(tempArray[5]);
+    customer2->setRequest(stoi(tempArray[6]));
+    customer2->setId(stoi(tempArray[7]));
+    customer3->setName(tempArray[8]);
+    customer3->setPhone(tempArray[9]);
+    customer3->setRequest(stoi(tempArray[10]));
+    customer3->setId(stoi(tempArray[11]));
+
+    customerOrderingList[0] = customer1;
+    customerOrderingList[1] = customer2;
+    customerOrderingList[2] = customer3;
+
+    available[stoi(tempArray[3])] = -1;
+    available[stoi(tempArray[7])] = -1;
+    available[stoi(tempArray[11])] = -1;
+
+        //delete customer;
 
     cout << "how about now" << endl;
     //replacing existing points with saved points
