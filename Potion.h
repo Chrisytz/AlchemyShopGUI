@@ -37,6 +37,7 @@ public:
     bool getIsMade();
     int getId();
     string toString();
+    static void setCount() { count = 0; };
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);

@@ -34,6 +34,7 @@ void splashScreen::onPlayPressed() {
     qDebug() << "button pressed";
     game -> close();
     Label::setCount();
+    Potion::setCount();
     game = new Game();
     game -> generateCustomerOrderingList(game->customerOrderingList, game->customerList, game->available, game->scene, game->customerTextList);
 
@@ -43,6 +44,7 @@ void splashScreen::onLoadPressed() {
     qDebug() << "load button working ish";
     game -> close();
     Label::setCount();
+    Potion::setCount();
     game = new Game();
     game -> getInformation(game->customerOrderingList, game->available, game-> scene, game-> customerTextList);
 
