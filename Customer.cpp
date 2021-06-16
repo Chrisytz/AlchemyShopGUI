@@ -28,6 +28,10 @@ Customer::Customer(string n, string p, int r, bool m, bool me) {
 
 }
 
+Customer::~Customer() {
+    qDebug() << "customer deleted";
+}
+
 string Customer::getName() {
     return name;
 }

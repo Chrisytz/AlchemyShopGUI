@@ -27,6 +27,7 @@ private:
 public:
     Potion();
     Potion(int ing1, int ing2, string name, bool isMade, QPixmap image);
+    ~Potion();
     void setBaseIngredient1(int ing1);
     void setBaseIngredient2(int ing2);
     void setName(string name);

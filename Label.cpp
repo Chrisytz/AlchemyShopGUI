@@ -5,6 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include "Game.h"
 #include "Potion.h"
+#include "splashScreen.h"
 
 extern Game * game;
 
@@ -33,17 +34,30 @@ Label::Label(int og_x, int og_y, QPixmap image) {
     id = count++;
 
 }
+Label::~Label(){
+    qDebug() << "pls pls pls work";
+}
 
 void Label::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    int posx = event -> scenePos().x();
+    int posy = event -> scenePos().y();
     if (event -> button() == Qt::LeftButton) {
-        Label *img = new Label(og_x, og_y, image, id);
+        Label *img = Label(og_x, og_y, image, id);
         img -> setPixmap(image);
         img -> setOffset(og_x,og_y);
         count2++;
         game -> scene -> addItem(img);
-
         game -> ingList[count2 - 1] = img;
 
+        if (posx > 406 && posx < 470 && posy > 456 && posy < 520) {
+            qDebug() << "save button pressed";
+            //splashScreen();
+            game->close();
+            game = new Game();
+            splashScreen *screen = new splashScreen();
+            Game::setPoints();
+            Label::setCount();
+        }
     }
 }
 
@@ -85,6 +99,7 @@ void Label::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
             game -> scene -> removeItem(game->lableList[game->ingList[0]->getId()]);
             game -> scene -> removeItem(game->ingList[0]);
             game -> lableList[game->ingList[0]->getId()] = game -> ingList[1];
+
         }
         else {
             game -> scene -> removeItem(game->lableList[game->ingList[0]->getId()]);

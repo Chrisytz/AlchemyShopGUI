@@ -11,7 +11,9 @@
 #include "Label.h"
 #include "Potion.h"
 #include "Customer.h"
+#include "Save.h"
 #include <QScrollBar>
+#include <QCloseEvent>
 
 class Game: public QGraphicsView{
 
@@ -26,6 +28,7 @@ public:
     Customer *generateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]);
     void delFlexList();
     void delSaveGame();
+    void closeEvent(QCloseEvent *event);
     static void setPoints() { points = 3; };
 
     static int points;
@@ -33,13 +36,13 @@ public:
 
     QGraphicsScene *scene;
 
-    QGraphicsRectItem *rect1;
-    QGraphicsRectItem *rect2;
-    QGraphicsRectItem *rect3;
-    QGraphicsRectItem *workspace;
-    QGraphicsRectItem *sidebar;
-    QGraphicsRectItem *trash;
-    QGraphicsRectItem *save;
+//    QGraphicsRectItem *rect1;
+//    QGraphicsRectItem *rect2;
+//    QGraphicsRectItem *rect3;
+//    QGraphicsRectItem *workspace;
+//    QGraphicsRectItem *sidebar;
+//    QGraphicsRectItem *trash;
+//    QGraphicsRectItem *save;
 
     Label *lableList[10];
     Label *life;
@@ -53,7 +56,6 @@ public:
     Label *cupcake;
     Label *toothbrush;
     Label *ingList[2];
-
 
     Potion *potionList[10];
     Potion *p0;
@@ -77,6 +79,9 @@ public:
     Customer *c7;
     Customer *c8;
     Customer *c9;
+    Customer *customer1;
+    Customer *customer2;
+    Customer *customer3;
     QGraphicsSimpleTextItem *customerTextList[3];
     Customer *customerOrderingList[3];
     Customer *customerList[10];

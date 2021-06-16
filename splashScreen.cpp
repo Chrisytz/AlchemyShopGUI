@@ -7,6 +7,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include "Customer.h"
+#include <fstream>
 
 
 #include "Label.h"
@@ -21,13 +22,17 @@ splashScreen::splashScreen() {
     game -> scene -> addItem(screen);
     play = new QPushButton(tr("&play game!"));
     play -> move(250, 260);
-    load = new QPushButton(tr("&load game"));
-    load -> move(250, 350);
     connect(play, SIGNAL(clicked()), this, SLOT(onPlayPressed()));
-    connect(load, SIGNAL(clicked()), this, SLOT(onLoadPressed()));
     game -> scene -> addWidget(play);
-    game -> scene -> addWidget(load);
 
+    ifstream read("saveGame.txt");
+    if (read.peek() != ifstream::traits_type::eof()) {
+        cout << "saveGame is not empty" << endl;
+        load = new QPushButton(tr("&load game"));
+        load -> move(250, 350);
+        connect(load, SIGNAL(clicked()), this, SLOT(onLoadPressed()));
+        game -> scene -> addWidget(load);
+    }
 }
 
 void splashScreen::onPlayPressed() {

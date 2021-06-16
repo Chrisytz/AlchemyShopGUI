@@ -10,8 +10,10 @@
 extern Game *game;
 
 FlexListButton::FlexListButton() {
-    buttonRestart = new QPushButton(tr("&Return"));
+    buttonRestart = new QPushButton(tr(""));
     buttonRestart -> move(400, 20);
+    buttonRestart->setStyleSheet("border-image:url(C:/Users/16136/CLionProjects/Alchemy-Shop-Testing/life.png);");
+    buttonRestart -> setFixedSize(64,64);
     connect(buttonRestart, SIGNAL(clicked()), this, SLOT(onLeftButtonPressed()));
     game -> scene -> addWidget(buttonRestart);
 
@@ -22,9 +24,9 @@ void FlexListButton::onLeftButtonPressed() {
     //splashScreen();
     game -> close();
     game = new Game();
-    splashScreen *screen = new splashScreen();
     game->delFlexList();
     game->delSaveGame();
+    splashScreen *screen = new splashScreen();
     Game::setPoints();
 
     Label::setCount();

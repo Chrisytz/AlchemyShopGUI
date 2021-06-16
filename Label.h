@@ -28,6 +28,7 @@ private:
 public:
     Label(int og_x, int og_y, QPixmap image);
     Label(int og_x, int og_y, QPixmap image, int id);
+    ~Label();
     int getId();
     static void setCount() { count = 0; };
 

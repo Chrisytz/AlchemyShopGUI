@@ -5,11 +5,61 @@
 #include <string>
 #include <string.h>
 #include "FlexListButton.h"
-#include "splashScreen.h"
+#include "Save.h"
 
 int Game::points = 3;
 int Game::scrollValue = 0;
 
+void Game::closeEvent(QCloseEvent *event) {
+    qDebug() << "wiudheh";
+    delete p0;
+    delete p1;
+    delete p2;
+    delete p3;
+    delete p4;
+    delete p5;
+    delete p6;
+    delete p7;
+    delete p8;
+    delete p9;
+
+
+    delete c0;
+    delete c1;
+    delete c2;
+    delete c3;
+    delete c4;
+    delete c5;
+    delete c6;
+    delete c7;
+    delete c8;
+    delete c9;
+    delete customer1;
+    delete customer2;
+    delete customer3;
+
+//    delete life;
+//    delete life;
+//    delete death;
+//    delete wood;
+//    delete water;
+//    delete fire;
+//    delete love;
+//    delete electricity;
+//    delete air;
+//    delete cupcake;
+//    delete toothbrush;
+//
+//    delete scene;
+//
+//    delete rect1;
+//    delete rect2;
+//    delete rect3;
+//    delete workspace;
+//    delete sidebar;
+//    delete trash;
+//    delete save;
+}
 //saving the game
 void Game::savingInformation(Customer *customerOrderingList[]) {
     ofstream MyFile("saveGame.txt");
@@ -77,9 +127,9 @@ Customer* Game:: getInformation(Customer *customerOrderingList[], int available[
     }
     //replacing existing customer queue with saved information
 
-    Customer *customer1 = new Customer();
-    Customer *customer2 = new Customer();
-    Customer *customer3 = new Customer();
+    customer1 = new Customer();
+    customer2 = new Customer();
+    customer3 = new Customer();
 
     customer1->setName(tempArray[0]);
     customer1->setPhone(tempArray[1]);
@@ -333,23 +383,30 @@ void Game::updateCustomerOrderingList(Customer *customerOrderingList[], Customer
 Game::Game(QWidget *parent) {
     srand(time(0));
     scene = new QGraphicsScene(0, 0, 554, 540);
-
     setScene(scene); //this is needed to visual the scene since Game is a QGraphicsView Widget?? it can be used to visualize scenes
-    rect1 = new QGraphicsRectItem(20,20,158,100);
+
+
+    /*rect1 = new QGraphicsRectItem(20,20,158,100);
     rect2 = new QGraphicsRectItem(198,20,158,100);
     rect3 = new QGraphicsRectItem(376,20,158,100);
     workspace = new QGraphicsRectItem(20,140,514,380);
     sidebar = new QGraphicsRectItem(20,140,158,380);
     trash = new QGraphicsRectItem(470,456,64,64);
-    save = new QGraphicsRectItem(406,456,64,64);
+    save = new QGraphicsRectItem(406,456,64,64);*/
+    QGraphicsPixmapItem *background = new QGraphicsPixmapItem;
+    background -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Main Workspace.png"));
 
-    scene -> addItem(rect1);
-    scene -> addItem(rect2);
-    scene -> addItem(rect3);
-    scene -> addItem(workspace);
-    scene -> addItem(sidebar);
-    scene -> addItem(trash);
-    scene -> addItem(save);
+    //scene -> addItem((QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Potions\\UI Main Workspace.png")));
+
+//    scene -> addItem(rect1);
+//    scene -> addItem(rect2);
+//    scene -> addItem(rect3);
+//    scene -> addItem(workspace);
+//    scene -> addItem(sidebar);
+//    scene -> addItem(trash);
+//    scene -> addItem(save);
+
+    scene -> addItem(background);
 
     potionList;
     p0 = new Potion(0, 3, "Fish potion", false, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Potions\\Fish Potion.png"));
@@ -389,6 +446,7 @@ Game::Game(QWidget *parent) {
     cupcake = new Label(30, 446, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\cupcake.png"));
     toothbrush = new Label(104, 446,
                                   QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Toothbrush SBG.png"));
+
     lableList[0] = life;
     lableList[1] = death;
     lableList[2] = wood;
@@ -440,8 +498,9 @@ Game::Game(QWidget *parent) {
     customerList[8] = c8;
     customerList[9] = c9;
 
-
-
+    //SaveButton *saving = new SaveButton();
+    Save *saving = new Save(406, 456, QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\Save.png"));
+    scene->addItem(saving);
 
     show();
 

@@ -33,6 +33,11 @@ Potion::Potion(int ing1, int ing2, string name, bool isMade, QPixmap image) {
     setPixmap(image);
     id = count++;
 }
+
+Potion::~Potion() {
+    cout << "potion deleted" << endl;
+}
+
 void Potion::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (event -> button() == Qt::LeftButton) {
 
