@@ -14,6 +14,7 @@
 #include <QScrollBar>
 
 class Game: public QGraphicsView{
+
 public:
     Game(QWidget *parent=0);
     //~Game();
@@ -23,6 +24,10 @@ public:
     void flex (Customer *customerOrderingList[], int index);
     Customer *getInformation(Customer *customerOrderingList[], int available[], QGraphicsScene *scene,  QGraphicsSimpleTextItem *customerTextList[]);
     Customer *generateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]);
+    void delFlexList();
+    void delSaveGame();
+    static void setPoints() { points = 3; };
+
     static int points;
     static int scrollValue;
 

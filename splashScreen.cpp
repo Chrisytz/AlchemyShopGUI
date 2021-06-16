@@ -33,8 +33,10 @@ splashScreen::splashScreen() {
 void splashScreen::onPlayPressed() {
     qDebug() << "button pressed";
     game -> close();
+    //Game::setPoints();
     Label::setCount();
     Potion::setCount();
+
     game = new Game();
     game -> generateCustomerOrderingList(game->customerOrderingList, game->customerList, game->available, game->scene, game->customerTextList);
 

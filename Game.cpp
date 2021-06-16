@@ -10,8 +10,6 @@
 int Game::points = 3;
 int Game::scrollValue = 0;
 
-
-
 //saving the game
 void Game::savingInformation(Customer *customerOrderingList[]) {
     ofstream MyFile("saveGame.txt");
@@ -61,7 +59,6 @@ void outputCustomer(Customer *c, int xcoor, int ycoor, QGraphicsScene *scene, QG
 
 //replacing customer queue with saved information
 Customer* Game:: getInformation(Customer *customerOrderingList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]) {
-    cout << "get information running" << endl;
     string tempArray[13];
     //resetting availability list in order to replace customer queue
     for (int i = 0; i < 10; i++) {
@@ -70,7 +67,6 @@ Customer* Game:: getInformation(Customer *customerOrderingList[], int available[
     int count = 0;
     string myText;
     //retrieving saved information from last save and quit
-    cout << "hello???" << endl;
     ifstream MyReadFile("saveGame.txt");
     while (getline(MyReadFile, myText)) {
         tempArray[count] = myText;
@@ -79,11 +75,6 @@ Customer* Game:: getInformation(Customer *customerOrderingList[], int available[
     for (int i = 0; i < 13; i++){
         cout << tempArray[i] << endl;
     }
-
-//    for (int i=0; i<3; i++) {
-//        cout << customerOrderingList[i]->toString();
-//    }
-    cout << "why u not wokringggg" << endl;
     //replacing existing customer queue with saved information
 
     Customer *customer1 = new Customer();
@@ -111,17 +102,13 @@ Customer* Game:: getInformation(Customer *customerOrderingList[], int available[
     available[stoi(tempArray[7])] = -1;
     available[stoi(tempArray[11])] = -1;
 
-        //delete customer;
 
-    cout << "how about now" << endl;
     //replacing existing points with saved points
     points = stoi(tempArray[12]);
     for (int i = 0; i < 3; i++) {
-        cout << "whya re u bad" << endl;
         cout << customerOrderingList[i]->toString() << endl;
         outputCustomer(customerOrderingList[i], (i*158)+ 30 + (i*20) , 30, scene, customerTextList, i);
     }
-    cout << "still wokring??" << endl;
     //return points;
     return *customerOrderingList;
 }
@@ -206,32 +193,34 @@ void outputResults(QGraphicsScene *scene, int scrollNum) {
     MyReadFile.close();
 }
 
-void Game::wheelEvent(QWheelEvent *event) {
-    if (points == 0 || points == 10) {
-        if (event->angleDelta().y() > 0) {
-            scene->clear();
-            scrollValue += event->angleDelta().y() / 6;
-            outputResults(scene, scrollValue);
-        } else {
-            scene->clear();
-            scrollValue += event->angleDelta().y() / 6;
-            outputResults(scene, scrollValue);
-
-        }
-    }
-}
-
-void delFlexList() {
+void Game::delFlexList() {
     fstream ofs;
     ofs.open("flexList.txt", ios::out | ios::trunc);
     ofs.close();
 }
 
 //clear contents of save game
-void delSaveGame() {
+void Game::delSaveGame() {
     fstream ofs;
     ofs.open("saveGame.txt", ios::out | ios::trunc);
     ofs.close();
+}
+
+void Game::wheelEvent(QWheelEvent *event) {
+    if (points == 0 || points == 10) {
+        if (event->angleDelta().y() > 0) {
+            scene->clear();
+            FlexListButton();
+            scrollValue += event->angleDelta().y() / 6;
+            outputResults(scene, scrollValue);
+
+        } else {
+            scene->clear();
+            FlexListButton();
+            scrollValue += event->angleDelta().y() / 6;
+            outputResults(scene, scrollValue);
+        }
+    }
 }
 
 // placing customers from the customer list into the ordering list
@@ -282,7 +271,6 @@ int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[
         scene -> clear();
         outputResults(scene, 0);
         FlexListButton *button = new FlexListButton();
-
     }
     //update the flex list
     flex(customerOrderingList, customer);

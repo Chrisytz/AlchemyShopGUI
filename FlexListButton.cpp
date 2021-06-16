@@ -11,7 +11,7 @@ extern Game *game;
 
 FlexListButton::FlexListButton() {
     buttonRestart = new QPushButton(tr("&Return"));
-    buttonRestart -> move(500, 20);
+    buttonRestart -> move(400, 20);
     connect(buttonRestart, SIGNAL(clicked()), this, SLOT(onLeftButtonPressed()));
     game -> scene -> addWidget(buttonRestart);
 
@@ -23,6 +23,9 @@ void FlexListButton::onLeftButtonPressed() {
     game -> close();
     game = new Game();
     splashScreen *screen = new splashScreen();
+    game->delFlexList();
+    game->delSaveGame();
+    Game::setPoints();
 
     Label::setCount();
 }
