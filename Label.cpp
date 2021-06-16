@@ -42,7 +42,7 @@ void Label::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     int posx = event -> scenePos().x();
     int posy = event -> scenePos().y();
     if (event -> button() == Qt::LeftButton) {
-        Label *img = Label(og_x, og_y, image, id);
+        Label *img = new Label(og_x, og_y, image, id);
         img -> setPixmap(image);
         img -> setOffset(og_x,og_y);
         count2++;

@@ -19,7 +19,6 @@ class Game: public QGraphicsView{
 
 public:
     Game(QWidget *parent=0);
-    //~Game();
     int giveCustomer(int potion, int customer, Customer *customerOrderingList[]);
     void updateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene);
     void savingInformation(Customer *customerOrderingList[]);
