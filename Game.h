@@ -14,6 +14,7 @@
 #include "Save.h"
 #include <QScrollBar>
 #include <QCloseEvent>
+#include "FlexListTabs.h"
 
 class Game: public QGraphicsView{
 
@@ -28,10 +29,16 @@ public:
     void delFlexList();
     void delSaveGame();
     void closeEvent(QCloseEvent *event);
+    void selectSort(string **arr, int length, QGraphicsScene *scene, int scrollNum);
+    void outputSortedResults(QGraphicsScene *scene, int scrollNum);
+    void outputResults(QGraphicsScene *scene, int scrollNum);
+    int countLines();
+    string** getFlexList();
     static void setPoints() { points = 3; };
-
+    bool chronoPressed = true;
     static int points;
     static int scrollValue;
+
 
     QGraphicsScene *scene;
 
@@ -42,6 +49,9 @@ public:
 //    QGraphicsRectItem *sidebar;
 //    QGraphicsRectItem *trash;
 //    QGraphicsRectItem *save;
+
+    FlexListTabs *chronoTab;
+    FlexListTabs *alphaTab;
 
     Label *lableList[10];
     Label *life;

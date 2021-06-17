@@ -6,6 +6,7 @@
 #include <string.h>
 #include "FlexListButton.h"
 #include "Save.h"
+#include "FlexListTabs.h"
 
 int Game::points = 3;
 int Game::scrollValue = 0;
@@ -34,9 +35,9 @@ void Game::closeEvent(QCloseEvent *event) {
     delete c7;
     delete c8;
     delete c9;
-    delete customer1;
-    delete customer2;
-    delete customer3;
+//    delete customer1;
+//    delete customer2;
+//    delete customer3;
 
 //    delete life;
 //    delete life;
@@ -50,15 +51,8 @@ void Game::closeEvent(QCloseEvent *event) {
 //    delete cupcake;
 //    delete toothbrush;
 //
-//    delete scene;
-//
-//    delete rect1;
-//    delete rect2;
-//    delete rect3;
-//    delete workspace;
-//    delete sidebar;
-//    delete trash;
-//    delete save;
+//     delete scene;
+
 }
 //saving the game
 void Game::savingInformation(Customer *customerOrderingList[]) {
@@ -85,7 +79,7 @@ void Game::flex(Customer *customerOrderingList[], int index) {
     outfile << "\n";
 }
 
-int countLines() {
+int Game::countLines() {
     //initializing variables
     int numLines = 0;
     string line;
@@ -163,7 +157,7 @@ Customer* Game:: getInformation(Customer *customerOrderingList[], int available[
     return *customerOrderingList;
 }
 
-string **getFlexList() {
+string **Game::getFlexList() {
     // creating a 2D array
     string **matrix;
     int numCustomers = countLines() / 5;
@@ -194,9 +188,11 @@ string **getFlexList() {
 }
 
 //sorting flex list alphabetically
-void selectSort(string **arr, int length) {
+void Game::selectSort(string **arr, int length, QGraphicsScene *scene, int scrollNum) {
     int pos_max;
     string temp[5];
+    //string *retArr = new string[length*5];
+    int count = 0;
 
     for (int i = length - 1; i > 0; i--) {
         //setting first index as temporary largest position
@@ -215,33 +211,100 @@ void selectSort(string **arr, int length) {
             arr[i][k] = arr[pos_max][k];
             arr[pos_max][k] = temp[k];
         }
-
     }
+
+//    string *sortedFlexList = new string[countLines()];
+//    //converting 2d into 1d array
+//    for (int i = 0; i < length; i++) {
+//        for (int j = 0; j < 5; j++) {
+//            sortedFlexList[(i * length) + j] = arr[i][j];
+//        }
+//    }
+
     //outputting order
     for (int i = length - 1; i >= 0; i--) {
         for (int j = 0; j < 5; j++) {
-            cout << arr[i][j] << endl;
+            string temp;
+            if (j == 2) {
+                temp = potionList[stoi(arr[i][j])]->getName();
+            }
+            else if (j == 3) {
+                int temp1;
+                temp1 = stoi(arr[i][j]);
+                if (temp1 == 1) {
+                    temp = "Customer unhappy";
+                }
+                else {
+                    temp = "Customer happy";
+                }
+            }
+            else {
+                temp = arr[i][j];
+            }
+            QString text = QString::fromStdString(temp);
+            QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
+            customerText -> setText(text);
+            scene->addItem(customerText);
+            customerText->setPos(35, count+scrollNum);
+            count += 20;
         }
     }
 }
 
 //outputting flex list at end of game
-void outputResults(QGraphicsScene *scene, int scrollNum) {
+void Game::outputResults(QGraphicsScene *scene, int scrollNum) {
     string results;
     ifstream MyReadFile("flexList.txt");
     int count = 0;
     while (getline(MyReadFile, results)) {
-        string temp = results;
+        string temp;
+        if (((count/20)-2)%5==0) {
+            int temp1 = stoi(results);
+            temp = potionList[temp1]->getName();
+        }
+        else if (((count/20)-3)%5==0) {
+            int temp2 = stoi(results);
+            if (temp2 == 1) {
+                temp = "Customer unhappy";
+            }
+            else {
+                temp = "Customer happy";
+            }
+        }
+        else {
+            temp = results;
+        }
+
         QString text = QString::fromStdString(temp);
 
         QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
         customerText -> setText(text);
         scene->addItem(customerText);
-        customerText->setPos(0, count+scrollNum);
+        customerText->setPos(35, count+scrollNum);
         count += 20;
     }
     MyReadFile.close();
 }
+
+//void Game::outputSortedResults(QGraphicsScene *scene, int scrollNum) {
+//    int count = 0;
+//    cout << countLines() << endl;
+//    for (int i = 0; i < countLines(); i++) {
+//        cout << *sortedFlexList[i] << endl;
+//    }
+//    for (int i = 0; i < countLines(); i++) {
+//        cout << "uwu running" << endl;
+//        //string temp = ;
+//        cout << "passed sortedFlexList[i]" << endl;
+//        QString text = QString::fromStdString(*sortedFlexList[i]);
+//        cout << "we are tired of your stupidness" << endl;
+//        QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
+//        customerText -> setText(text);
+//        scene->addItem(customerText);
+//        customerText->setPos(0, count+scrollNum);
+//        count += 20;
+//    }
+//}
 
 void Game::delFlexList() {
     fstream ofs;
@@ -257,19 +320,31 @@ void Game::delSaveGame() {
 }
 
 void Game::wheelEvent(QWheelEvent *event) {
+    QGraphicsPixmapItem *backgroundChrono = new QGraphicsPixmapItem;
+    backgroundChrono -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 1.png"));
+    QGraphicsPixmapItem *backgroundSorted = new QGraphicsPixmapItem;
+    backgroundSorted -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 2 (1).png"));
+    QGraphicsPixmapItem *backgroundChronoBorder = new QGraphicsPixmapItem;
+    backgroundChronoBorder -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 1 Border.png"));\
+    QGraphicsPixmapItem *backgroundSortedBorder = new QGraphicsPixmapItem;
+    backgroundSortedBorder -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 2 Border.png"));
     if (points == 0 || points == 10) {
-        if (event->angleDelta().y() > 0) {
-            scene->clear();
-            FlexListButton();
-            scrollValue += event->angleDelta().y() / 6;
+        scene->clear();
+        chronoTab = new FlexListTabs(31, 27);//delete
+        scene->addItem(chronoTab);
+        alphaTab = new FlexListTabs(278, 27);//delete
+        scene->addItem(alphaTab);
+        if (chronoPressed == true) {
+            scene->addItem(backgroundChrono);
             outputResults(scene, scrollValue);
-
+            scene->addItem(backgroundChronoBorder);
         } else {
-            scene->clear();
-            FlexListButton();
-            scrollValue += event->angleDelta().y() / 6;
-            outputResults(scene, scrollValue);
+            scene->addItem(backgroundSorted);
+            selectSort(getFlexList(), countLines() / 5, scene, scrollValue);
+            scene->addItem(backgroundSortedBorder);
         }
+        FlexListButton *returnButton = new FlexListButton();
+        scrollValue += event->angleDelta().y() / 6;
     }
 }
 
@@ -296,6 +371,12 @@ Customer* Game::generateCustomerOrderingList(Customer *customerOrderingList[], C
 int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[]) {
     //if the potion the customer ordered is the potion delivered, increase the points and set isMade to true
     Popup message;
+    //todo: move this all into the constructor and then itll work ezpz
+    QGraphicsPixmapItem *backgroundChrono = new QGraphicsPixmapItem;
+    backgroundChrono -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 1.png"));
+    QGraphicsPixmapItem *backgroundChronoBorder = new QGraphicsPixmapItem;
+    backgroundChronoBorder -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 1 Border.png"));
+
     if (customerOrderingList[customer]->getRequest() == potion) {
         message.popup_getPoint();
         customerOrderingList[customer]->setIsMade(true);
@@ -308,23 +389,29 @@ int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[
         points--;
     }
 
-    if (points == 0){
-        message.popup_lose();
+    if (points == 0 || points == 10){
+        if (points == 0) {
+            message.popup_lose();
+        }
+        else {
+            message.popup_win();
+        }
 
         scene -> clear();
-        outputResults(scene, 0);
-        FlexListButton *button = new FlexListButton();
+        chronoTab = new FlexListTabs(31,27);//delete
+        scene -> addItem(chronoTab);
+        alphaTab = new FlexListTabs(278,27);//delete
+        scene -> addItem(alphaTab);
 
-    }
-    else if (points == 10) {
-        message.popup_win();
-        scene -> clear();
-        outputResults(scene, 0);
+        scene->addItem(backgroundChrono);
+        outputResults(scene, scrollValue);
+        scene->addItem(backgroundChronoBorder);
+
+
         FlexListButton *button = new FlexListButton();
     }
     //update the flex list
     flex(customerOrderingList, customer);
-
     qDebug() << "points:" << points;
     return points;
 }
@@ -501,6 +588,8 @@ Game::Game(QWidget *parent) {
     //SaveButton *saving = new SaveButton();
     Save *saving = new Save(406, 456, QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\Save.png"));
     scene->addItem(saving);
+
+    //sortedFlexList = selectSort(getFlexList(), countLines()/5, scene, 0);
 
     show();
 

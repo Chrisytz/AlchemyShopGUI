@@ -23,7 +23,9 @@ void FlexListButton::onLeftButtonPressed() {
     qDebug() << "button pressed";
     //splashScreen();
     game -> close();
+    qDebug() << "game closed";
     game = new Game();
+    qDebug() << "new game created";
     game->delFlexList();
     game->delSaveGame();
     splashScreen *screen = new splashScreen();

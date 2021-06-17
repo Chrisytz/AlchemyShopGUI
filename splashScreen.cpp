@@ -8,7 +8,7 @@
 #include <QGraphicsRectItem>
 #include "Customer.h"
 #include <fstream>
-
+#include "Popup.h"
 
 #include "Label.h"
 
@@ -24,6 +24,12 @@ splashScreen::splashScreen() {
     play -> move(250, 260);
     connect(play, SIGNAL(clicked()), this, SLOT(onPlayPressed()));
     game -> scene -> addWidget(play);
+
+    instructions = new QPushButton(tr("&instructions!"));
+    instructions -> move(250, 380);
+    connect(instructions, SIGNAL(clicked()), this, SLOT(onInstrPressed()));
+    game -> scene -> addWidget(instructions);
+
 
     ifstream read("saveGame.txt");
     if (read.peek() != ifstream::traits_type::eof()) {
@@ -45,6 +51,11 @@ void splashScreen::onPlayPressed() {
     game = new Game();
     game -> generateCustomerOrderingList(game->customerOrderingList, game->customerList, game->available, game->scene, game->customerTextList);
 
+}
+
+void splashScreen::onInstrPressed() {
+    Popup info;
+    info.popup_instr();
 }
 
 void splashScreen::onLoadPressed() {
