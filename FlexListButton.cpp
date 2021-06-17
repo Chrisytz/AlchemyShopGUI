@@ -1,35 +1,34 @@
-//
-// Created by 16136 on 2021-06-14.
-//
 #include "FlexListButton.h"
 #include <QtGui>
 #include "Game.h"
-#include "Label.h"
 #include "splashScreen.h"
 
 extern Game *game;
 
+//constructor
 FlexListButton::FlexListButton() {
+    //creates and formats restart button
     buttonRestart = new QPushButton(tr(""));
-    buttonRestart -> move(400, 20);
+    buttonRestart -> move(470, 456);
     buttonRestart->setStyleSheet("border-image:url(C:/Users/16136/CLionProjects/Alchemy-Shop-Testing/life.png);");
     buttonRestart -> setFixedSize(64,64);
+    //connects signal to slot
     connect(buttonRestart, SIGNAL(clicked()), this, SLOT(onLeftButtonPressed()));
+    //adds to scene
     game -> scene -> addWidget(buttonRestart);
-
 }
 
+//slot (executed when button is clicked to restart game and take to splashscreen)
 void FlexListButton::onLeftButtonPressed() {
-    qDebug() << "button pressed";
-    //splashScreen();
+    //closes game and starts new one
     game -> close();
-    qDebug() << "game closed";
     game = new Game();
-    qDebug() << "new game created";
+    //clears flex list and save game files
     game->delFlexList();
     game->delSaveGame();
+    //creates splashscreen object (calls constructor which opens splashscreen)
     splashScreen *screen = new splashScreen();
+    //resets points and potion count
     Game::setPoints();
-
     Label::setCount();
 }

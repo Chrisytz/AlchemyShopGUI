@@ -1,7 +1,3 @@
-//
-// Created by 16136 on 2021-06-10.
-//
-
 #ifndef ALCHEMY_SHOP_TESTING_GAME_H
 #define ALCHEMY_SHOP_TESTING_GAME_H
 #include <QGraphicsView>
@@ -32,6 +28,7 @@ public:
     void selectSort(string **arr, int length, QGraphicsScene *scene, int scrollNum);
     void outputSortedResults(QGraphicsScene *scene, int scrollNum);
     void outputResults(QGraphicsScene *scene, int scrollNum);
+    void outputPoints();
     int countLines();
     string** getFlexList();
     static void setPoints() { points = 3; };
@@ -39,16 +36,8 @@ public:
     static int points;
     static int scrollValue;
 
-
     QGraphicsScene *scene;
-
-//    QGraphicsRectItem *rect1;
-//    QGraphicsRectItem *rect2;
-//    QGraphicsRectItem *rect3;
-//    QGraphicsRectItem *workspace;
-//    QGraphicsRectItem *sidebar;
-//    QGraphicsRectItem *trash;
-//    QGraphicsRectItem *save;
+    QGraphicsSimpleTextItem *pointText;
 
     FlexListTabs *chronoTab;
     FlexListTabs *alphaTab;
@@ -88,9 +77,7 @@ public:
     Customer *c7;
     Customer *c8;
     Customer *c9;
-    Customer *customer1;
-    Customer *customer2;
-    Customer *customer3;
+
     QGraphicsSimpleTextItem *customerTextList[3];
     Customer *customerOrderingList[3];
     Customer *customerList[10];

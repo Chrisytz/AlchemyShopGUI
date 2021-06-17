@@ -1,7 +1,3 @@
-//
-// Created by 16136 on 2021-06-10.
-//
-
 #ifndef ALCHEMY_SHOP_TESTING_POTION_H
 #define ALCHEMY_SHOP_TESTING_POTION_H
 #include <iostream>
@@ -28,16 +24,13 @@ public:
     Potion();
     Potion(int ing1, int ing2, string name, bool isMade, QPixmap image);
     ~Potion();
-    void setBaseIngredient1(int ing1);
-    void setBaseIngredient2(int ing2);
-    void setName(string name);
     void setIsMade(bool isMade);
     int getBaseIngredient1();
     int getBaseIngredient2();
     string getName();
     bool getIsMade();
     int getId();
-    string toString();
+    //sets count back to zero every time a new game is started
     static void setCount() { count = 0; };
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

@@ -5,14 +5,16 @@
 #include <string>
 #include <string.h>
 #include "FlexListButton.h"
+#include <string>
 #include "Save.h"
 #include "FlexListTabs.h"
 
 int Game::points = 3;
 int Game::scrollValue = 0;
 
+// when window closes, objects are deleted
 void Game::closeEvent(QCloseEvent *event) {
-    qDebug() << "wiudheh";
+
     delete p0;
     delete p1;
     delete p2;
@@ -54,7 +56,8 @@ void Game::closeEvent(QCloseEvent *event) {
 //     delete scene;
 
 }
-//saving the game
+
+//saving the game (putting information into save game file)
 void Game::savingInformation(Customer *customerOrderingList[]) {
     ofstream MyFile("saveGame.txt");
     // include customers currently in queue and total points
@@ -68,7 +71,7 @@ void Game::savingInformation(Customer *customerOrderingList[]) {
     MyFile.close();
 }
 
-//list of past customers
+//list of past customers (puts information into flex list file)
 void Game::flex(Customer *customerOrderingList[], int index) {
     ofstream outfile;
     outfile.open("flexList.txt", ios_base::app);
@@ -77,8 +80,10 @@ void Game::flex(Customer *customerOrderingList[], int index) {
     outfile << customerOrderingList[index]->getRequest() << "\n";
     outfile << customerOrderingList[index]->getIsMad() << "\n";
     outfile << "\n";
+    outfile.close();
 }
 
+//getting number of lines in flex list
 int Game::countLines() {
     //initializing variables
     int numLines = 0;
@@ -90,10 +95,12 @@ int Game::countLines() {
     }
     return numLines;
 }
+
+//outputs customer information in slot
 void outputCustomer(Customer *c, int xcoor, int ycoor, QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[], int index) {
     string temp = c->toString();
     QString text = QString::fromStdString(temp);
-
+    //adding text onto scene
     QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
     customerText -> setText(text);
     scene->addItem(customerText);
@@ -101,7 +108,7 @@ void outputCustomer(Customer *c, int xcoor, int ycoor, QGraphicsScene *scene, QG
     customerTextList[index] = customerText;
 }
 
-//replacing customer queue with saved information
+//replacing and outputting customer queue with saved information
 Customer* Game:: getInformation(Customer *customerOrderingList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]) {
     string tempArray[13];
     //resetting availability list in order to replace customer queue
@@ -116,14 +123,11 @@ Customer* Game:: getInformation(Customer *customerOrderingList[], int available[
         tempArray[count] = myText;
         count++;
     }
-    for (int i = 0; i < 13; i++){
-        cout << tempArray[i] << endl;
-    }
-    //replacing existing customer queue with saved information
 
-    customer1 = new Customer();
-    customer2 = new Customer();
-    customer3 = new Customer();
+    //creating customer objects with information from save game file
+    Customer *customer1 = new Customer();
+    Customer *customer2 = new Customer();
+    Customer *customer3 = new Customer();
 
     customer1->setName(tempArray[0]);
     customer1->setPhone(tempArray[1]);
@@ -142,21 +146,26 @@ Customer* Game:: getInformation(Customer *customerOrderingList[], int available[
     customerOrderingList[1] = customer2;
     customerOrderingList[2] = customer3;
 
+    //setting outputted customers to unavailable
     available[stoi(tempArray[3])] = -1;
     available[stoi(tempArray[7])] = -1;
     available[stoi(tempArray[11])] = -1;
 
-
     //replacing existing points with saved points
     points = stoi(tempArray[12]);
+
+    //outputting the three customers into slots
     for (int i = 0; i < 3; i++) {
-        cout << customerOrderingList[i]->toString() << endl;
         outputCustomer(customerOrderingList[i], (i*158)+ 30 + (i*20) , 30, scene, customerTextList, i);
     }
-    //return points;
+
+    //outputs current point tally
+    outputPoints();
+
     return *customerOrderingList;
 }
 
+//getting information from flex list and returning in 2d string array
 string **Game::getFlexList() {
     // creating a 2D array
     string **matrix;
@@ -187,47 +196,38 @@ string **Game::getFlexList() {
     return matrix;
 }
 
-//sorting flex list alphabetically
+//sorting and outputting flex list alphabetically
 void Game::selectSort(string **arr, int length, QGraphicsScene *scene, int scrollNum) {
     int pos_max;
     string temp[5];
-    //string *retArr = new string[length*5];
     int count = 0;
 
     for (int i = length - 1; i > 0; i--) {
         //setting first index as temporary largest position
         pos_max = 0;
         for (int j = 1; j <= i; j++) {
-            //checks if current position is greater alphabetically
+            //checking if current position is greater alphabetically
             if (strcmp(arr[j][0].c_str(), arr[pos_max][0].c_str()) < 0) {
-
-                pos_max = j; //if larger found, set new largest
+                pos_max = j; //if larger found, setting new largest
             }
         }
         //swapping element at i (and all the elements that are associated with it in 2d list) with largest element in unsorted section
         for (int k = 0; k < 5; k++) {
-
             temp[k] = arr[i][k];
             arr[i][k] = arr[pos_max][k];
             arr[pos_max][k] = temp[k];
         }
     }
 
-//    string *sortedFlexList = new string[countLines()];
-//    //converting 2d into 1d array
-//    for (int i = 0; i < length; i++) {
-//        for (int j = 0; j < 5; j++) {
-//            sortedFlexList[(i * length) + j] = arr[i][j];
-//        }
-//    }
-
     //outputting order
     for (int i = length - 1; i >= 0; i--) {
         for (int j = 0; j < 5; j++) {
             string temp;
+            //changing potion id to potion name
             if (j == 2) {
                 temp = potionList[stoi(arr[i][j])]->getName();
             }
+            //changing isMad bool to if customer was satisfied
             else if (j == 3) {
                 int temp1;
                 temp1 = stoi(arr[i][j]);
@@ -241,11 +241,13 @@ void Game::selectSort(string **arr, int length, QGraphicsScene *scene, int scrol
             else {
                 temp = arr[i][j];
             }
+            //adding to scene
             QString text = QString::fromStdString(temp);
             QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
             customerText -> setText(text);
             scene->addItem(customerText);
             customerText->setPos(35, count+scrollNum);
+            //to account for spacing out text (to avoid overlap)
             count += 20;
         }
     }
@@ -256,12 +258,15 @@ void Game::outputResults(QGraphicsScene *scene, int scrollNum) {
     string results;
     ifstream MyReadFile("flexList.txt");
     int count = 0;
+    //reads from flex list file
     while (getline(MyReadFile, results)) {
         string temp;
+        //checks if getline is at third line (potion request) of each customer information block to change from id to name
         if (((count/20)-2)%5==0) {
             int temp1 = stoi(results);
             temp = potionList[temp1]->getName();
         }
+        //checks if getline is at fourth line (isMad) of each customer info block to change from bool to text
         else if (((count/20)-3)%5==0) {
             int temp2 = stoi(results);
             if (temp2 == 1) {
@@ -274,7 +279,7 @@ void Game::outputResults(QGraphicsScene *scene, int scrollNum) {
         else {
             temp = results;
         }
-
+        //adding to scene
         QString text = QString::fromStdString(temp);
 
         QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
@@ -286,26 +291,7 @@ void Game::outputResults(QGraphicsScene *scene, int scrollNum) {
     MyReadFile.close();
 }
 
-//void Game::outputSortedResults(QGraphicsScene *scene, int scrollNum) {
-//    int count = 0;
-//    cout << countLines() << endl;
-//    for (int i = 0; i < countLines(); i++) {
-//        cout << *sortedFlexList[i] << endl;
-//    }
-//    for (int i = 0; i < countLines(); i++) {
-//        cout << "uwu running" << endl;
-//        //string temp = ;
-//        cout << "passed sortedFlexList[i]" << endl;
-//        QString text = QString::fromStdString(*sortedFlexList[i]);
-//        cout << "we are tired of your stupidness" << endl;
-//        QGraphicsSimpleTextItem *customerText = new QGraphicsSimpleTextItem();
-//        customerText -> setText(text);
-//        scene->addItem(customerText);
-//        customerText->setPos(0, count+scrollNum);
-//        count += 20;
-//    }
-//}
-
+//clears contents of flex list
 void Game::delFlexList() {
     fstream ofs;
     ofs.open("flexList.txt", ios::out | ios::trunc);
@@ -319,7 +305,9 @@ void Game::delSaveGame() {
     ofs.close();
 }
 
+//controls scrolling of flex list
 void Game::wheelEvent(QWheelEvent *event) {
+    //creating background objects for flex list output
     QGraphicsPixmapItem *backgroundChrono = new QGraphicsPixmapItem;
     backgroundChrono -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 1.png"));
     QGraphicsPixmapItem *backgroundSorted = new QGraphicsPixmapItem;
@@ -328,12 +316,15 @@ void Game::wheelEvent(QWheelEvent *event) {
     backgroundChronoBorder -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 1 Border.png"));\
     QGraphicsPixmapItem *backgroundSortedBorder = new QGraphicsPixmapItem;
     backgroundSortedBorder -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 2 Border.png"));
+    //only allow scrolling when user wins or loses (scrolling only on the flex list scene)
     if (points == 0 || points == 10) {
+        //everytime user scrolls, scene is cleared
         scene->clear();
         chronoTab = new FlexListTabs(31, 27);//delete
         scene->addItem(chronoTab);
         alphaTab = new FlexListTabs(278, 27);//delete
         scene->addItem(alphaTab);
+        //checks which tab is pressed to output correct sorting method
         if (chronoPressed == true) {
             scene->addItem(backgroundChrono);
             outputResults(scene, scrollValue);
@@ -343,14 +334,16 @@ void Game::wheelEvent(QWheelEvent *event) {
             selectSort(getFlexList(), countLines() / 5, scene, scrollValue);
             scene->addItem(backgroundSortedBorder);
         }
+        //return button takes user back to the splash screen
         FlexListButton *returnButton = new FlexListButton();
+        //how much one scroll adjusts the screen upwards or downwards
         scrollValue += event->angleDelta().y() / 6;
     }
 }
 
 // placing customers from the customer list into the ordering list
 Customer* Game::generateCustomerOrderingList(Customer *customerOrderingList[], Customer *customerList[], int available[], QGraphicsScene *scene, QGraphicsSimpleTextItem *customerTextList[]) {
-    //same as above, rng generator that catches if a customer is already in queue
+    //rng generator that catches if a customer is already in queue (same as updateCustomerOrderingList)
     for (int i = 0; i < 3; i++) {
         int x;
         int y;
@@ -364,23 +357,36 @@ Customer* Game::generateCustomerOrderingList(Customer *customerOrderingList[], C
         outputCustomer(customerOrderingList[i], (i*158)+ 30 + (i*20) , 30, scene, customerTextList, i);
 
     }
+    //outputs original point tally
+    outputPoints();
     return *customerOrderingList;
 }
 
-//checks if potion made is the right potion that the customer ordered
+//outputs point tally
+void Game::outputPoints() {
+    QString p = QString::fromStdString("Points: "+to_string(points));
+    pointText = new QGraphicsSimpleTextItem();
+    pointText -> setText(p);
+    scene->removeItem(pointText);
+    scene->addItem(pointText);
+    pointText->setPos(477, 150);
+}
+
+//checks if potion made is the right potion that the customer ordered, checks if user won/lost
 int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[]) {
     //if the potion the customer ordered is the potion delivered, increase the points and set isMade to true
     Popup message;
-    //todo: move this all into the constructor and then itll work ezpz
+    //creating background objects
     QGraphicsPixmapItem *backgroundChrono = new QGraphicsPixmapItem;
     backgroundChrono -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 1.png"));
     QGraphicsPixmapItem *backgroundChronoBorder = new QGraphicsPixmapItem;
     backgroundChronoBorder -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Flex List Tab 1 Border.png"));
-
+    //checks if potion matches customer request
     if (customerOrderingList[customer]->getRequest() == potion) {
         message.popup_getPoint();
         customerOrderingList[customer]->setIsMade(true);
         points++;
+
 
         //if the potion the customer ordered is not the potion delivered, decrease the points and set isMad to true
     } else {
@@ -389,30 +395,39 @@ int Game::giveCustomer(int potion, int customer, Customer *customerOrderingList[
         points--;
     }
 
+    //replaces old point tally with new point tally
+    scene->removeItem(pointText);
+    delete pointText;
+    outputPoints();
+
+    //checks for win or loss
     if (points == 0 || points == 10){
+        //win/lose pop up messages
         if (points == 0) {
             message.popup_lose();
         }
         else {
             message.popup_win();
         }
-
+        // if won or lost clear the scene and print flex list
         scene -> clear();
+        // invisible graphicsItems to allow user to click on each tab
         chronoTab = new FlexListTabs(31,27);//delete
         scene -> addItem(chronoTab);
         alphaTab = new FlexListTabs(278,27);//delete
         scene -> addItem(alphaTab);
 
+        // add background and output flex list to scene
         scene->addItem(backgroundChrono);
         outputResults(scene, scrollValue);
         scene->addItem(backgroundChronoBorder);
 
-
+        //generates a button every time the scene resets
         FlexListButton *button = new FlexListButton();
     }
     //update the flex list
     flex(customerOrderingList, customer);
-    qDebug() << "points:" << points;
+
     return points;
 }
 
@@ -421,6 +436,7 @@ void Game::updateCustomerOrderingList(Customer *customerOrderingList[], Customer
     if (points != 0 && points != 10) {
         for (int i = 0; i < 3; i++) {
             int temp;
+            //if customer leaves, replaces with new customer
             if (customerOrderingList[i]->getIsMad() == true || customerOrderingList[i]->getIsMade() == true) {
 
                 int x;
@@ -447,6 +463,8 @@ void Game::updateCustomerOrderingList(Customer *customerOrderingList[], Customer
 
                 // after customer leaves, customer becomes available
                 available[temp] = temp;
+
+                //old customer queue is removed from scene
                 scene->removeItem(customerTextList[0]);
                 scene->removeItem(customerTextList[1]);
                 scene->removeItem(customerTextList[2]);
@@ -454,48 +472,29 @@ void Game::updateCustomerOrderingList(Customer *customerOrderingList[], Customer
                 delete customerTextList[1];
                 delete customerTextList[2];
 
-                qDebug() << "A new customer arrived! Here is your customer list: ";
+                //new customer queue added to scene
+                //qDebug() << "A new customer arrived! Here is your customer list: ";
                 for (int j = 0; j < 3; j++) {
-
                     outputCustomer(customerOrderingList[j], (j * 158) + 30 + (j * 20), 30, scene, customerTextList, j);
                 }
             }
         }
     }
-
-
-    //return *customerOrderingList;
 }
 
+//constructor for UI (runs when game is called)
 Game::Game(QWidget *parent) {
-    srand(time(0));
+    srand(time(0)); //randomizing random
     scene = new QGraphicsScene(0, 0, 554, 540);
-    setScene(scene); //this is needed to visual the scene since Game is a QGraphicsView Widget?? it can be used to visualize scenes
+    setScene(scene); //this is needed to visual the scene since Game is a QGraphicsView Widget, it can be used to visualize scenes
 
-
-    /*rect1 = new QGraphicsRectItem(20,20,158,100);
-    rect2 = new QGraphicsRectItem(198,20,158,100);
-    rect3 = new QGraphicsRectItem(376,20,158,100);
-    workspace = new QGraphicsRectItem(20,140,514,380);
-    sidebar = new QGraphicsRectItem(20,140,158,380);
-    trash = new QGraphicsRectItem(470,456,64,64);
-    save = new QGraphicsRectItem(406,456,64,64);*/
+    //todo: add trash can and correct save picture to scene
+    //creating workspace background and adding to scene
     QGraphicsPixmapItem *background = new QGraphicsPixmapItem;
     background -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Main Workspace.png"));
-
-    //scene -> addItem((QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Potions\\UI Main Workspace.png")));
-
-//    scene -> addItem(rect1);
-//    scene -> addItem(rect2);
-//    scene -> addItem(rect3);
-//    scene -> addItem(workspace);
-//    scene -> addItem(sidebar);
-//    scene -> addItem(trash);
-//    scene -> addItem(save);
-
     scene -> addItem(background);
 
-    potionList;
+    //creating potions
     p0 = new Potion(0, 3, "Fish potion", false, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Potions\\Fish Potion.png"));
     p1 = new Potion(0, 1, "Aging potion", false, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Potions\\Aging Potion.png"));
     p2 = new Potion(1, 8, "Poison potion", false, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Potions\\poison potion.png"));
@@ -507,6 +506,7 @@ Game::Game(QWidget *parent) {
     p8 = new Potion(5, 7, "Levitation potion", false, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Potions\\Levitation Potion.png"));
     p9 = new Potion(6, 9, "Auto-scrubbing potion", false, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Potions\\Auto-Scrubbing Potion.png"));
 
+    //assigning potions into array
     potionList[0] = p0;
     potionList[1] = p1;
     potionList[2] = p2;
@@ -518,8 +518,7 @@ Game::Game(QWidget *parent) {
     potionList[8] = p8;
     potionList[9] = p9;
 
-    ingList;
-
+    //creating ingredients
     life = new Label(30, 150, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\life.png"));
     death = new Label(104, 150, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\death.png"));
     wood = new Label(30, 224, QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\wood (1).png"));
@@ -534,6 +533,7 @@ Game::Game(QWidget *parent) {
     toothbrush = new Label(104, 446,
                                   QPixmap("C:\\Users\\16136\\CLionProjects\\Alchemy-Shop-Testing\\Toothbrush SBG.png"));
 
+    //assigning ingredients into array
     lableList[0] = life;
     lableList[1] = death;
     lableList[2] = wood;
@@ -545,6 +545,7 @@ Game::Game(QWidget *parent) {
     lableList[8] = cupcake;
     lableList[9] = toothbrush;
 
+    //adding ingredients to scene
     scene->addItem(life);
     scene->addItem(death);
     scene->addItem(wood);
@@ -556,7 +557,7 @@ Game::Game(QWidget *parent) {
     scene->addItem(cupcake);
     scene->addItem(toothbrush);
 
-
+    //creating customer objects
     c0 = new Customer("Bob", "333-666-9999", rand() % 10, false, false);
     c1 = new Customer("Arys Borderlands", "123-456-7891", rand() % 10, false, false);
     c2 = new Customer("Chibueze Teaman", "545-777-6868", rand() % 10, false, false);
@@ -568,12 +569,11 @@ Game::Game(QWidget *parent) {
     c8 = new Customer("Demi Burgeress", "169-242-7092", rand() % 10, false, false);
     c9 = new Customer("Fatimah Sweeney", "666-666-1004", rand() % 10, false, false);
 
-    customerList;
-    customerOrderingList;
-
+    //setting availability list to default
     for (int i = 0; i < 10; i++) {
         available[i] = i;
     }
+    //assigning customers into array
     customerList[0] = c0;
     customerList[1] = c1;
     customerList[2] = c2;
@@ -585,58 +585,11 @@ Game::Game(QWidget *parent) {
     customerList[8] = c8;
     customerList[9] = c9;
 
-    //SaveButton *saving = new SaveButton();
+    //creating save button and adding to scene
     Save *saving = new Save(406, 456, QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\Save.png"));
     scene->addItem(saving);
 
-    //sortedFlexList = selectSort(getFlexList(), countLines()/5, scene, 0);
-
+    //shows scene
     show();
 
 }
-
-//Game::~Game() {
-//    qDebug() << "delete working";
-//    delete c9;
-//    delete c8;
-//    delete c7;
-//    delete c6;
-//    delete c5;
-//    delete c4;
-//    delete c3;
-//    delete c2;
-//    delete c1;
-//    delete c0;
-//
-//    delete toothbrush;
-//    delete cupcake;
-//    delete air;
-//    delete electricity;
-//    delete love;
-//    delete fire;
-//    delete wood;
-//    delete death;
-//    delete life;
-//
-//    delete p9;
-//    delete p8;
-//    delete p7;
-//    delete p6;
-//    delete p5;
-//    delete p4;
-//    delete p3;
-//    delete p2;
-//    delete p1;
-//    delete p0;
-//
-//    delete save;
-//    delete trash;
-//    delete sidebar;
-//    delete workspace;
-//    delete rect3;
-//    delete rect2;
-//    delete rect1;
-//    delete scene;
-//
-//}
-

@@ -17,11 +17,7 @@ private:
     int og_x;
     int og_y;
     QPixmap image;
-    string name;
     int id;
-    int tempId1;
-    int tempId2;
-    int numIng;
     static int count;
     static int count2;
 
@@ -37,7 +33,6 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
 };
 
 #endif //ALCHEMY_SHOP_TESTING_LABEL_H

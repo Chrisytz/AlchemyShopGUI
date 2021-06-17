@@ -1,7 +1,3 @@
-//
-// Created by 16136 on 2021-06-14.
-//
-
 #ifndef ALCHEMYSHOPGUI_FLEXLISTBUTTON_H
 #define ALCHEMYSHOPGUI_FLEXLISTBUTTON_H
 #include <iostream>
