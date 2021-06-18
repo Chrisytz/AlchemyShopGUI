@@ -13,21 +13,25 @@ extern Game *game;
 splashScreen::splashScreen() {
     //clears scene and creates a new splashscreen on top of it
     game -> scene -> clear();
-    QGraphicsRectItem *screen = new QGraphicsRectItem(0,0,554,540);
-    screen -> setBrush(Qt::blue);
+    QGraphicsPixmapItem *screen = new QGraphicsPixmapItem;
+    screen -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\splashscreen.png"));
     game -> scene -> addItem(screen);
 
     //creates play game button
-    play = new QPushButton(tr("&play game!"));
-    play -> move(250, 260);
+    play = new QPushButton();
+    play -> move(29, 281);
+    play->setStyleSheet("border-image:url(C:/Users/16136/CLionProjects/AlchemyShopGUI/playgame.png);");
+    play -> setFixedSize(95,38);
     //connects play game signal to slot
     connect(play, SIGNAL(clicked()), this, SLOT(onPlayPressed()));
     //adds to scene
     game -> scene -> addWidget(play);
 
     //creates an instructions button
-    instructions = new QPushButton(tr("&instructions!"));
-    instructions -> move(250, 380);
+    instructions = new QPushButton(tr(""));
+    instructions -> move(29, 410);
+    instructions->setStyleSheet("border-image:url(C:/Users/16136/CLionProjects/AlchemyShopGUI/instructions.png);");
+    instructions -> setFixedSize(95,38);
     //connects instructions button to slot
     connect(instructions, SIGNAL(clicked()), this, SLOT(onInstrPressed()));
     //adds to scene
@@ -37,8 +41,10 @@ splashScreen::splashScreen() {
     ifstream read("saveGame.txt");
     if (read.peek() != ifstream::traits_type::eof()) {
         //creates and connects button, adds it to scene
-        load = new QPushButton(tr("&load game"));
-        load -> move(250, 350);
+        load = new QPushButton(tr(""));
+        load -> move(29, 345);
+        load->setStyleSheet("border-image:url(C:/Users/16136/CLionProjects/AlchemyShopGUI/loadgame.png);");
+        load -> setFixedSize(95,38);
         connect(load, SIGNAL(clicked()), this, SLOT(onLoadPressed()));
         game -> scene -> addWidget(load);
     }

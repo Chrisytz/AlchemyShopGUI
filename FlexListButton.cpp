@@ -10,7 +10,7 @@ FlexListButton::FlexListButton() {
     //creates and formats restart button
     buttonRestart = new QPushButton(tr(""));
     buttonRestart -> move(470, 456);
-    buttonRestart->setStyleSheet("border-image:url(C:/Users/16136/CLionProjects/Alchemy-Shop-Testing/life.png);");
+    buttonRestart->setStyleSheet("border-image:url(C:/Users/16136/CLionProjects/AlchemyShopGUI/Restart.png);");
     buttonRestart -> setFixedSize(64,64);
     //connects signal to slot
     connect(buttonRestart, SIGNAL(clicked()), this, SLOT(onLeftButtonPressed()));

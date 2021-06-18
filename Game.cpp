@@ -589,6 +589,11 @@ Game::Game(QWidget *parent) {
     Save *saving = new Save(406, 456, QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\Save.png"));
     scene->addItem(saving);
 
+    QGraphicsPixmapItem *trash = new QGraphicsPixmapItem;
+    trash -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\Trash.png"));
+    trash -> setOffset(470,456);
+    scene -> addItem(trash);
+
     //shows scene
     show();
 
