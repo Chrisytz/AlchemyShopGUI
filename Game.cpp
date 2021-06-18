@@ -37,23 +37,6 @@ void Game::closeEvent(QCloseEvent *event) {
     delete c7;
     delete c8;
     delete c9;
-//    delete customer1;
-//    delete customer2;
-//    delete customer3;
-
-//    delete life;
-//    delete life;
-//    delete death;
-//    delete wood;
-//    delete water;
-//    delete fire;
-//    delete love;
-//    delete electricity;
-//    delete air;
-//    delete cupcake;
-//    delete toothbrush;
-//
-//     delete scene;
 
 }
 
@@ -488,7 +471,6 @@ Game::Game(QWidget *parent) {
     scene = new QGraphicsScene(0, 0, 554, 540);
     setScene(scene); //this is needed to visual the scene since Game is a QGraphicsView Widget, it can be used to visualize scenes
 
-    //todo: add trash can and correct save picture to scene
     //creating workspace background and adding to scene
     QGraphicsPixmapItem *background = new QGraphicsPixmapItem;
     background -> setPixmap(QPixmap("C:\\Users\\16136\\CLionProjects\\AlchemyShopGUI\\UI Main Workspace.png"));
